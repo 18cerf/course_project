@@ -1,0 +1,56 @@
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    width: 800px;
+    margin: auto;
+}
+.header{
+    margin: auto;
+    font-size: 40px;
+}
+
+.user {
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+
+    border: 10px;
+    padding: 50px;
+    border-radius: 10px;
+    background-color: bisque;
+    margin: 50px auto;
+
+    font-size: 30px;
+
+
+}
+
+.user_full_name {
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+
+}
+
+.user_contacts {
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.sign_out{
+    margin: auto;
+    margin-top: 50px;
+}
+.button{
+    padding: 20px;
+    background-color: bisque;
+}
+ol {
+    list-style-type: none;
+}

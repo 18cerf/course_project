@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>КУРСОВОЙ ПРОЕКТ</title>
+    <link rel="stylesheet" th:href="@{/styles/style_all_users.css}"/>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="\static\styles\style_all_users.css"
+          th:href="@{/styles/style_all_users.css}">
+</head>
+<body>
+<div class="section">
+    <div class="header">
+        <h1>Пользователи:</h1>
+
+    </div>
+
+
+    <ol>
+        <li th:each="user : ${users}">
+            <div class="user">
+                <div class="user_full_name">
+                    <h2>
+                        <span th:text="${user.name}">user name</span>
+                        <span th:text="${user.lastname}">user lastname</span>
+                    </h2>
+                </div>
+                <div class="user_contacts">
+                    <span th:text="${user.phoneNumber}">user phone number</span>
+                    <br>
+                    <span th:text="${user.email}">user email</span>
+                </div>
+            </div>
+        </li>
+    </ol>
+
+    <div class="sign_out">
+        <form th:action="@{/logout}" method="post">
+            <input type="submit" value="Sign Out" class="button"/>
+        </form>
+    </div>
+</div>
+</body>
+</html>

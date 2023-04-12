@@ -1,0 +1,62 @@
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    width: 800px;
+    margin: auto;
+}
+
+.header {
+    margin: auto;
+    font-size: 40px;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+
+    border: 10px;
+    padding: 50px;
+    border-radius: 10px;
+    background-color: bisque;
+    margin: 50px auto;
+
+    font-size: 30px;
+}
+
+.data {
+    height: 50px;
+    width: 400px;
+font-size: 30px;
+}
+
+.user_contacts {
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.sign_in {
+    width: fit-content;
+    margin: auto;
+    margin-top: 50px;
+}
+
+.button {
+    margin: auto;
+    padding: 20px;
+    background-color: bisque;
+    font-size: 20px;
+}
+
+.message {
+    margin: auto;
+    font-size: 30px;
+    color: red;
+}
