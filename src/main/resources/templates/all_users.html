@@ -16,6 +16,16 @@
     </div>
 
 
+    <form th:action="@{/users/search}" method="get">
+        <label for="searchParam">Search:</label>
+        <input type="text" name="searchParam">
+        <button type="submit">Search</button>
+    </form>
+    <div>
+        <span th:text="${message}"></span>
+    </div>
+
+
     <ol>
         <li th:each="user : ${users}">
             <div class="user">
@@ -30,6 +40,14 @@
                     <br>
                     <span th:text="${user.email}">user email</span>
                 </div>
+
+                <div class="button"><a th:href="@{/users/{id}(id=${user.id})}">Просмотреть</a></div>
+
+<!--                <div class="button"><a th:href="/users/id">here</a></div>-->
+
+                <form th:action="@{/users/{id}(id=${user.id})}" method="post" th:object="${user}">
+                    <input type="submit" value="Добавить" class="button"/>
+                </form>
             </div>
         </li>
     </ol>

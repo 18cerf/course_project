@@ -33,7 +33,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests()
-                .requestMatchers("/home", "/main", "/users", "static/styles/**")
+                .requestMatchers("/users","/users/**", "static/styles/**")
                 .hasRole("USER")
                 .and()
                 .authorizeHttpRequests()
@@ -42,7 +42,7 @@ public class WebSecurityConfig {
                 .and()
                 .formLogin()
                 .loginPage("/login")
-                .defaultSuccessUrl("/main")
+                .defaultSuccessUrl("/users/main")
 //                .and()
 //                .logout().logoutSuccessUrl("/login")
                 .and()
