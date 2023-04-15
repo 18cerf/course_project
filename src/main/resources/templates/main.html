@@ -45,6 +45,10 @@
         <button class="button">Найти пользователя</button>
     </form>
 
+    <form th:action="@{/users/main/edit}" class="find_users">
+        <button class="button">Изменить</button>
+    </form>
+
 
     <form th:action="@{/logout}" method="post" class="sign_out">
         <input type="submit" value="Выйти" class="button"/>

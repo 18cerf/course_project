@@ -2,10 +2,13 @@ package com.project.course_project.controller;
 
 import com.project.course_project.entity.user.User;
 import com.project.course_project.repository.user.UserRepository;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -19,13 +22,15 @@ import java.util.Set;
 public class UserController {
 
     private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/main")
-    public String home(Model model, @AuthenticationPrincipal User user) {
+    public String showMainUser(Model model, @AuthenticationPrincipal User user) {
         log.info(user.toString());
         //model.addAllAttributes(getUserMap(user));
         model.addAttribute("user", user);
@@ -33,6 +38,30 @@ public class UserController {
         model.addAttribute("user_friends", user.getFriends());
 
         return "main";
+    }
+
+    @GetMapping("/main/edit")
+    public String editMainUser(@AuthenticationPrincipal User user, Model model) {
+        model.addAttribute("user", user);
+        return "edit-main-user";
+    }
+
+    @PostMapping("/main/edit")
+    public String saveMainEdit(@Valid User editedUser, BindingResult bindingResult,
+                               @AuthenticationPrincipal User user) {
+        if (bindingResult.hasErrors()) {
+            return "edit-main-user";
+        } else {
+            user.setUsername(editedUser.getUsername());
+            user.setPassword(passwordEncoder.encode(editedUser.getPassword()));
+            user.setName(editedUser.getName());
+            user.setLastname(editedUser.getLastname());
+            user.setPhoneNumber(editedUser.getPhoneNumber());
+            user.setEmail(editedUser.getEmail());
+
+            userRepository.save(user);
+            return "redirect:/users/main";
+        }
     }
 
     @GetMapping("/")
@@ -53,8 +82,14 @@ public class UserController {
         User newFriend = userRepository.findUserById(newFriendId);
 
         if (!(user.getFriends().contains(newFriend) || user.getId() == newFriendId || newFriend.getFriends().contains(user))) {
-            user.setFriend(newFriend);
-            userRepository.save(user);
+            try {
+                user.setFriend(newFriend);
+                userRepository.save(user);
+                user.clearFriendInMemory();
+            } catch (Exception e) {
+                log.info(e.toString());
+            }
+
         }
         return "redirect:";
     }

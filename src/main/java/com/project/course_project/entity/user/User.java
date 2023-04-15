@@ -18,14 +18,14 @@ import java.util.*;
 @Table(name = "users")
 public class User implements UserDetails {
 
-    public User(@NonNull String username, @NonNull String password, @NonNull String lastname, @NonNull String name, @NonNull String phoneNumber, @NonNull String email) {
+    public User(@NonNull String username, @NonNull String password, @NonNull String lastname, @NonNull String name, @NonNull String phoneNumber, @NonNull String email, Set friends) {
         this.username = username;
         this.password = password;
         this.lastname = lastname;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.email = email;
-        this.friends = new ArrayList<User>();
+        this.friends = friends;
     }
 
     private static final Long serialVersionUID = 1L;
@@ -35,18 +35,19 @@ public class User implements UserDetails {
     private Long id;
 
     @NonNull
-    @Size(min = 5)
+    @Size(min = 5, message = "Юзернейм должен содержать больше 5 символов")
     private String username;
 
     @NonNull
+    @Size(min = 6, message = "Пароль должен содержать больше 6 символов")
     private String password;
 
     @NonNull
-    @Pattern(regexp = "^[А-ЯA-Z][a-zа-яё]+$")
+    @Pattern(regexp = "^[А-ЯA-Z][a-zа-яё]+$", message = "Пример: Иванов")
     private String lastname;
 
     @NonNull
-    @Pattern(regexp = "^[А-ЯA-Z][a-zа-яё]+$")
+    @Pattern(regexp = "^[А-ЯA-Z][a-zа-яё]+$", message = "Пример: Иван")
     private String name;
 
     @NonNull
@@ -59,14 +60,20 @@ public class User implements UserDetails {
 
     @JoinColumn(name = "users_id")
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<User> friends;
+    private Set<User> friends;
 
     public void setFriend(User friend) {
         friends.add(friend);
     }
 
-    public List<User> getFriends() {
+    public Set<User> getFriends() {
         return friends;
+    }
+
+
+    //если добавлять много друзей за 1 сессию то хибернейт бросается эксепшенами. Для этого реализовал очистку друзей из памяти.
+    public void clearFriendInMemory() {
+        friends.clear();
     }
 
     @Override

@@ -11,6 +11,8 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.HashSet;
+
 @Data
 @Slf4j
 @NoArgsConstructor
@@ -18,18 +20,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class RegistrationForm {
 
     @NonNull
-    @Size(min = 5)
+    @Size(min = 5, message = "Юзернейм должен содержать больше 5 символов")
     private String username;
 
     @NonNull
+    @Size(min = 6, message = "Пароль должен содержать больше 6 символов")
     private String password;
 
     @NonNull
-    @Pattern(regexp = "^[А-ЯA-Z][a-zа-яё]+$", message = "Ошибка, никнейм должен содержать больше 5 символов")
+    @Pattern(regexp = "^[А-ЯA-Z][a-zа-яё]+$", message = "Некорректно, пример: Иванов")
     private String lastname;
 
     @NonNull
-    @Pattern(regexp = "^[А-ЯA-Z][a-zа-яё]+$", message = "Ошибка, пароль должен содержать больше 6 символов")
+    @Pattern(regexp = "^[А-ЯA-Z][a-zа-яё]+$", message = "Некорректно, пример: Иван")
     private String name;
 
     @NonNull
@@ -42,6 +45,6 @@ public class RegistrationForm {
 
 
     public User toUser(PasswordEncoder passwordEncoder) {
-        return new User(username, passwordEncoder.encode(password), lastname, name, phoneNumber, email);
+        return new User(username, passwordEncoder.encode(password), lastname, name, phoneNumber, email, new HashSet());
     }
 }
