@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashSet;
+import java.util.TreeSet;
 
 @Data
 @Slf4j
@@ -45,6 +46,6 @@ public class RegistrationForm {
 
 
     public User toUser(PasswordEncoder passwordEncoder) {
-        return new User(username, passwordEncoder.encode(password), lastname, name, phoneNumber, email, new HashSet());
+        return new User(username, passwordEncoder.encode(password), lastname, name, phoneNumber, email, new TreeSet<User>());
     }
 }

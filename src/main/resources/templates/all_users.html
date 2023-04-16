@@ -31,8 +31,12 @@
             <div class="user">
                 <div class="user_full_name">
                     <h2>
-                        <span th:text="${user.name}">user name</span>
-                        <span th:text="${user.lastname}">user lastname</span>
+                        <div class="button">
+                            <a th:href="@{/users/{id}(id=${user.id})}">
+                                <span th:text="${user.name}">user name</span>
+                                <span th:text="${user.lastname}">user lastname</span>
+                            </a>
+                        </div>
                     </h2>
                 </div>
                 <div class="user_contacts">
@@ -41,9 +45,8 @@
                     <span th:text="${user.email}">user email</span>
                 </div>
 
-                <div class="button"><a th:href="@{/users/{id}(id=${user.id})}">Просмотреть</a></div>
 
-<!--                <div class="button"><a th:href="/users/id">here</a></div>-->
+                <!--                <div class="button"><a th:href="/users/id">here</a></div>-->
 
                 <form th:action="@{/users/{id}(id=${user.id})}" method="post" th:object="${user}">
                     <input type="submit" value="Добавить" class="button"/>

@@ -32,10 +32,13 @@
 
     <h3>
         <ul>
-            <li th:each="friend : ${user_friends}">
-                <span th:text="${friend.name}">friend name</span>
-                <span th:text="${friend.lastname}">friend name</span>
-                <span th:text="${friend.username}">friend name</span>
+            <li class="contacts" th:each="friend : ${user_friends}">
+                <a th:href="@{/users/{id}(id=${friend.id})}">
+                    <span th:text="${friend.name}">friend name</span>
+                    <span th:text="${friend.lastname}">friend name</span>
+                    <br>
+                    <span th:text="${friend.username}">friend name</span>
+                </a>
             </li>
         </ul>
     </h3>

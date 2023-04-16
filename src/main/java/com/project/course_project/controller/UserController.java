@@ -1,9 +1,12 @@
 package com.project.course_project.controller;
 
+import com.project.course_project.entity.user.DateTime;
 import com.project.course_project.entity.user.User;
+import com.project.course_project.repository.date.DateRepository;
 import com.project.course_project.repository.user.UserRepository;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -11,10 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Controller
@@ -23,10 +23,12 @@ public class UserController {
 
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
+    private DateRepository dateRepository;
 
-    public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder, DateRepository dateRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.dateRepository = dateRepository;
     }
 
     @GetMapping("/main")
@@ -37,7 +39,27 @@ public class UserController {
 
         model.addAttribute("user_friends", user.getFriends());
 
+        DateTime dateTime = new DateTime();
+        dateTime.setTimestamp();
+        user.getLoginTimes().add(dateTime);
+        userRepository.save(user);
+
+        Set<String> loginTimes = new TreeSet<String>(Comparator.reverseOrder());
+
+        for (DateTime time : user.getLoginTimes()) {
+            loginTimes.add(time.getTimestamp().toString());
+        }
+
+
+        model.addAttribute("login_times", loginTimes);
         return "main";
+    }
+
+    @GetMapping("/main/delete/logs")
+    public String deleteUsersLogs(@AuthenticationPrincipal User user){
+        user.getLoginTimes().clear();
+        userRepository.save(user);
+        return "redirect:/users/main";
     }
 
     @GetMapping("/main/edit")
@@ -83,13 +105,18 @@ public class UserController {
 
         if (!(user.getFriends().contains(newFriend) || user.getId() == newFriendId || newFriend.getFriends().contains(user))) {
             try {
-                user.setFriend(newFriend);
+//                user.setFriend(newFriend);
+//                userRepository.save(user);
+//                newFriend.setFriend(user);
+//                userRepository.save(newFriend);
+                user.getFriends().add(newFriend);
                 userRepository.save(user);
-                user.clearFriendInMemory();
+
+                newFriend.getFriends().add(user);
+                userRepository.save(newFriend);
             } catch (Exception e) {
                 log.info(e.toString());
             }
-
         }
         return "redirect:";
     }

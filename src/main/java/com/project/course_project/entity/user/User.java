@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Getter
@@ -58,9 +59,26 @@ public class User implements UserDetails {
     @Pattern(regexp = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$", message = "Укажите, пожалуйста, корректный email")
     private String email;
 
-    @JoinColumn(name = "users_id")
+    @JoinTable(
+            name = "user_friends",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "friend_id")
+    )
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<User> friends;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "date_time_id")
+    private Set<DateTime> loginTimes = new HashSet<>();
+
+
+    public Set<DateTime> getLoginTimes() {
+        return loginTimes;
+    }
+
+    public void setLoginTimes(Set<DateTime> loginTimes) {
+        this.loginTimes = loginTimes;
+    }
 
     public void setFriend(User friend) {
         friends.add(friend);
@@ -70,11 +88,6 @@ public class User implements UserDetails {
         return friends;
     }
 
-
-    //если добавлять много друзей за 1 сессию то хибернейт бросается эксепшенами. Для этого реализовал очистку друзей из памяти.
-    public void clearFriendInMemory() {
-        friends.clear();
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

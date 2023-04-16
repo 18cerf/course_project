@@ -28,7 +28,4 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     List<User> findByPhoneNumberContaining(String partialNickname);
 
-//    List<User> findAllFriendsByUserId(Long id);
-
-
 }
