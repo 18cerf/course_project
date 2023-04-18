@@ -1,18 +1,19 @@
 package com.project.course_project.controller;
 
-import com.project.course_project.entity.user.DateTime;
+import com.project.course_project.entity.date.DateTime;
 import com.project.course_project.entity.user.User;
 import com.project.course_project.repository.date.DateRepository;
 import com.project.course_project.repository.user.UserRepository;
+import com.project.course_project.service.image.UserImageService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -21,14 +22,16 @@ import java.util.*;
 @RequestMapping("/users")
 public class UserController {
 
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
-    private DateRepository dateRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final DateRepository dateRepository;
+    private final UserImageService userImageService;
 
-    public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder, DateRepository dateRepository) {
+    public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder, DateRepository dateRepository, UserImageService userImageService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.dateRepository = dateRepository;
+        this.userImageService = userImageService;
     }
 
     @GetMapping("/main")
@@ -50,13 +53,50 @@ public class UserController {
             loginTimes.add(time.getTimestamp().toString());
         }
 
+        /////
 
+        byte[] imageData = userImageService.getUserImage(user.getId());
+        if (imageData != null) {
+            String base64ImageData = Base64.getEncoder().encodeToString(imageData);
+            model.addAttribute("userImage", base64ImageData);
+        }
+
+        ///////
         model.addAttribute("login_times", loginTimes);
         return "main";
     }
 
+
+    /////////////
+
+
+
+
+    @PostMapping("/image")
+    public String uploadUserImage(@RequestParam("file") MultipartFile image,
+    @AuthenticationPrincipal User user) {
+        if (!image.isEmpty()) {
+            try {
+                userImageService.saveUserImage(image.getBytes(), user);
+            } catch (Exception e){
+                log.info(e.toString());
+            }
+        }
+        return "redirect:/users/main";
+    }
+
+
+
+
+
+
+
+
+    /////////
+
+
     @GetMapping("/main/delete/logs")
-    public String deleteUsersLogs(@AuthenticationPrincipal User user){
+    public String deleteUsersLogs(@AuthenticationPrincipal User user) {
         user.getLoginTimes().clear();
         userRepository.save(user);
         return "redirect:/users/main";

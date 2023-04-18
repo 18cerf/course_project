@@ -18,6 +18,9 @@
         </h1>
     </div>
 
+    <div class="contacts"><img th:if="${userImage}" th:src="'data:image/png;base64,' + ${userImage}" alt="User Image">
+    </div>
+
 
     <div class="contacts">
         <span th:text="${user.username}">Никнейм</span>
@@ -33,7 +36,7 @@
     <h3>
         <ul>
             <li class="contacts" th:each="time : ${login_times}">
-                    <span th:text="${time}">friend name</span>
+                <span th:text="${time}">friend name</span>
             </li>
         </ul>
     </h3>
@@ -53,6 +56,15 @@
     </h3>
 
 
+<!--    <form method="POST" enctype="multipart/form-data" th:action="@{/users/image}" th:object="${formImage}">-->
+<!--        <input type="file" name="imageFile">-->
+<!--        <button type="submit">Upload</button>-->
+<!--    </form>-->
+
+    <form th:action="@{/users/image}" method="post" enctype="multipart/form-data" >
+        <input type="file" name="file" class="button" />
+        <button type="submit" class="button">Upload</button>
+    </form>
 
     <form th:action="@{/users/main/delete/logs}" class="find_users">
         <button class="button">Очистить логи входа</button>

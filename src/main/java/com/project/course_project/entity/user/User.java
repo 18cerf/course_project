@@ -1,5 +1,7 @@
 package com.project.course_project.entity.user;
 
+import com.project.course_project.entity.date.DateTime;
+import com.project.course_project.entity.image.UserImage;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -8,7 +10,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Getter
@@ -71,6 +72,9 @@ public class User implements UserDetails {
     @JoinColumn(name = "date_time_id")
     private Set<DateTime> loginTimes = new HashSet<>();
 
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_images_id")
+    private List<UserImage> images = new ArrayList<>();
 
     public Set<DateTime> getLoginTimes() {
         return loginTimes;

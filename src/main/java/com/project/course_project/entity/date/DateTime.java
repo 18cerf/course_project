@@ -1,4 +1,4 @@
-package com.project.course_project.entity.user;
+package com.project.course_project.entity.date;
 
 import jakarta.persistence.*;
 import lombok.Data;
