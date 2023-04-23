@@ -3,6 +3,13 @@ body {
     flex-direction: column;
 }
 
+.button{
+    padding: 20px;
+    background-color: bisque;
+    font-size: 30px;
+    margin: auto;
+}
+
 .section {
     display: flex;
     flex-direction: column;
@@ -42,15 +49,13 @@ body {
     margin: auto;
     margin-top: 20px;
     margin-bottom: 20px;
+    font-size: 40px;
 }
 .sign_out{
     margin: auto;
     margin-top: 50px;
 }
-.button{
-    padding: 20px;
-    background-color: bisque;
-}
+
 ol {
     list-style-type: none;
 }

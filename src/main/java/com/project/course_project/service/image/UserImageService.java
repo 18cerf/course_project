@@ -8,16 +8,21 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+
+/*
+ * Сервис-класс для работы с UserImageRepository
+ */
 @Service
 public class UserImageService {
     private final UserImageRepository userImageRepository;
-    private final UserRepository userRepository;
 
-    public UserImageService(UserImageRepository userImageRepository, UserRepository userRepository) {
+    public UserImageService(UserImageRepository userImageRepository) {
         this.userImageRepository = userImageRepository;
-        this.userRepository = userRepository;
     }
 
+    /*
+     * Метод сохраняет картинку пользователя в базу
+     */
     public void saveUserImage(byte[] imageData, User user) {
         UserImage userImage = new UserImage();
         userImage.setUser(user);
@@ -25,8 +30,11 @@ public class UserImageService {
         userImageRepository.save(userImage);
     }
 
+    /*
+     * Метод возвращает картинку по ID пользователя
+     */
     public byte[] getUserImage(Long userId) {
-        Optional<UserImage> userImageOptional = userImageRepository.findByUserId(userId);
+        Optional<UserImage> userImageOptional = userImageRepository.findFirstByUserId(userId);
         if (userImageOptional.isPresent()) {
             return userImageOptional.get().getImageData();
         } else {

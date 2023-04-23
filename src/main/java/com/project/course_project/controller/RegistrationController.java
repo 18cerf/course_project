@@ -1,7 +1,7 @@
 package com.project.course_project.controller;
 
 import com.project.course_project.repository.user.UserRepository;
-import com.project.course_project.forms.RegistrationForm;
+import com.project.course_project.data.form.RegistrationForm;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+
+/*
+ * Контроллер, предназначенный для регистрации новых пользователей
+ */
 @Controller
 @RequestMapping("/register")
 @Slf4j
@@ -22,6 +26,10 @@ public class RegistrationController {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
 
+
+    /*
+     * Внедряем бины userRepository и passwordEncoder
+     */
     public RegistrationController(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder
@@ -30,16 +38,32 @@ public class RegistrationController {
         this.userRepository = userRepository;
     }
 
+    /*
+     * ModelAttribute "registerForm" предназначен для заполнения его данными о User
+     * + валидации входящей информации о новом User.
+     *
+     */
     @ModelAttribute(name = "registerForm")
     public RegistrationForm registrationForm() {
         return new RegistrationForm();
     }
 
+    /*
+     * Возвращает представление для регистрации.
+     */
     @GetMapping
     public String registerForm() {
         return "registration";
     }
 
+
+    /*
+     *
+     * В случае успешной валидации данных происходит редирект на страницу входа
+     *
+     * Если данные валидацию не прошли, возвращается на страницу регистрации.
+     *
+     */
     @PostMapping
     public String processRegistration(@ModelAttribute("registerForm") @Valid RegistrationForm registrationForm,
                                       Errors errors,
