@@ -50,11 +50,11 @@ public class UserController {
      */
     @GetMapping("/main")
     public String showMainUser(Model model, @AuthenticationPrincipal User user) {
-        log.info(user.toString());
+//        log.info(user.toString());
         //model.addAllAttributes(getUserMap(user));
-        model.addAttribute("user", user);
+        model.addAttribute("user", userRepository.findUserById(user.getId()));
 
-        model.addAttribute("user_friends", user.getFriends());
+        model.addAttribute("user_friends", userRepository.findUserById(user.getId()).getFriends());
 
         DateTime dateTime = new DateTime();
         dateTime.setTimestamp();
@@ -172,7 +172,7 @@ public class UserController {
 //        model.addAttribute("users", userRepository.findAll());
         ArrayList<Long> friendsIds = new ArrayList<Long>();
         for (User friends :
-                user.getFriends()) {
+                userRepository.findUserById(user.getId()).getFriends()) {
             friendsIds.add(friends.getId());
         }
         friendsIds.add(user.getId());
@@ -189,12 +189,9 @@ public class UserController {
     public String addFriend(@AuthenticationPrincipal User user, @PathVariable("id") Long newFriendId) {
         User newFriend = userRepository.findUserById(newFriendId);
 
-        if (!(user.getFriends().contains(newFriend) || user.getId() == newFriendId || newFriend.getFriends().contains(user))) {
+        if (!(userRepository.findUserById(user.getId()).getFriends().contains(newFriend) || user.getId() == newFriendId || newFriend.getFriends().contains(user))) {
             try {
-//                user.setFriend(newFriend);
-//                userRepository.save(user);
-//                newFriend.setFriend(user);
-//                userRepository.save(newFriend);
+                user = userRepository.findUserById(user.getId());
                 user.getFriends().add(newFriend);
                 userRepository.save(user);
 
